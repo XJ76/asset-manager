@@ -59,19 +59,40 @@ async function login(req, res) {
 async function googleCallback(req, res) {
   try {
     const user = req.user;
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
     
-    if (!user) {
-      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    if (!user || !user.email) {
       return res.redirect(`${frontendUrl}/auth/google/select?error=user_not_found`);
+    }
+    
+    const dbUser = await userModel.findByEmail(user.email);
+    
+    if (dbUser && dbUser.organization_id) {
+      const token = generateToken({
+        id: dbUser.id,
+        email: dbUser.email,
+        role: dbUser.role,
+        organizationId: dbUser.organization_id,
+      });
+      
+      return res.redirect(
+        `${frontendUrl}/auth/google/callback?token=${token}&user=${encodeURIComponent(JSON.stringify({
+          id: dbUser.id,
+          email: dbUser.email,
+          name: dbUser.name,
+          role: dbUser.role,
+          status: dbUser.status,
+          organizationId: dbUser.organization_id,
+        }))}`
+      );
     }
     
     const tempToken = generateTempToken({
       email: user.email,
-      name: user.name,
+      name: user.name || user.email.split('@')[0],
       googleId: user.id,
     });
     
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
     res.redirect(`${frontendUrl}/auth/google/select?token=${tempToken}`);
   } catch (error) {
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
