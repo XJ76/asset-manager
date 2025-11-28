@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useCallback, useRef } from "react"
 import { organizationsApi } from "@/lib/api/organizations"
 import type { CreateOrgSignup } from "@/types/auth"
 import type { Organization } from "@/types"
@@ -8,8 +8,11 @@ import type { Organization } from "@/types"
 export function useOrganizations() {
   const [organizations, setOrganizations] = useState<Organization[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const fetchingRef = useRef(false)
 
-  const fetchOrganizations = async () => {
+  const fetchOrganizations = useCallback(async () => {
+    if (fetchingRef.current) return // Prevent multiple simultaneous fetches
+    fetchingRef.current = true
     setIsLoading(true)
     try {
       const orgs = await organizationsApi.getAll()
@@ -19,8 +22,9 @@ export function useOrganizations() {
       setOrganizations([])
     } finally {
       setIsLoading(false)
+      fetchingRef.current = false
     }
-  }
+  }, [])
 
   const createOrganization = async (data: CreateOrgSignup) => {
     const response = await organizationsApi.create(data)
