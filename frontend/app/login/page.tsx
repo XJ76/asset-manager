@@ -3,21 +3,26 @@
 import { useRouter } from "next/navigation"
 import { LoginCard } from "@/components/auth/login-card"
 import { useAuthContext } from "@/contexts/auth-context"
-import type { UserRole } from "@/types"
+import { useAuthStore } from "@/stores/auth-store"
 import Link from "next/link"
 
 export default function LoginPage() {
   const router = useRouter()
   const { login, isLoading } = useAuthContext()
 
-  const handleLogin = async (email: string, password: string, role: UserRole) => {
-    const user = await login({ email, password, role })
-    if (user) {
-      if (user.status === "pending") {
-        router.push("/pending-approval")
-      } else {
-        router.push(user.role === "admin" ? "/admin" : "/dashboard")
+  const handleLogin = async (email: string, password: string) => {
+    try {
+      await login({ email, password })
+      const currentUser = useAuthStore.getState().user
+      if (currentUser) {
+        if (currentUser.status === "pending") {
+          router.push("/pending-approval")
+        } else {
+          router.push(currentUser.role === "admin" ? "/admin" : "/dashboard")
+        }
       }
+    } catch (error) {
+      console.error("Login failed:", error)
     }
   }
 

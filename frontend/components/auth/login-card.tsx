@@ -3,10 +3,9 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { LoginForm } from "./login-form"
 import { LogoIcon } from "@/components/icons"
-import type { UserRole } from "@/types"
 
 interface LoginCardProps {
-  onSubmit: (email: string, password: string, role: UserRole) => void
+  onSubmit: (email: string, password: string) => void
   onGoogleSignIn?: () => void
   isLoading?: boolean
 }

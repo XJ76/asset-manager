@@ -1,25 +1,14 @@
 "use client"
 
-import { useState, useCallback } from "react"
-import type { Category } from "@/types"
-import type { CategoryFormData } from "@/types/forms"
+import { useEffect } from "react"
+import { useCategoriesStore } from "@/stores/categories-store"
 
 export function useCategories() {
-  const [categories, setCategories] = useState<Category[]>([])
-  const [isLoading, setIsLoading] = useState(false)
+  const { categories, isLoading, error, fetchCategories, createCategory } = useCategoriesStore()
 
-  const fetchCategories = useCallback(async () => {
-    setIsLoading(true)
-    // TODO: Replace with actual API call
-    setIsLoading(false)
-  }, [])
+  useEffect(() => {
+    fetchCategories()
+  }, [fetchCategories])
 
-  const createCategory = useCallback(async (data: CategoryFormData) => {
-    // TODO: Replace with actual API call
-    const newCategory: Category = { id: crypto.randomUUID(), ...data }
-    setCategories((prev) => [...prev, newCategory])
-    return newCategory
-  }, [])
-
-  return { categories, isLoading, fetchCategories, createCategory, setCategories }
+  return { categories, isLoading, error, fetchCategories, createCategory }
 }

@@ -1,25 +1,14 @@
 "use client"
 
-import { useState, useCallback } from "react"
-import type { Department } from "@/types"
-import type { DepartmentFormData } from "@/types/forms"
+import { useEffect } from "react"
+import { useDepartmentsStore } from "@/stores/departments-store"
 
 export function useDepartments() {
-  const [departments, setDepartments] = useState<Department[]>([])
-  const [isLoading, setIsLoading] = useState(false)
+  const { departments, isLoading, error, fetchDepartments, createDepartment } = useDepartmentsStore()
 
-  const fetchDepartments = useCallback(async () => {
-    setIsLoading(true)
-    // TODO: Replace with actual API call
-    setIsLoading(false)
-  }, [])
+  useEffect(() => {
+    fetchDepartments()
+  }, [fetchDepartments])
 
-  const createDepartment = useCallback(async (data: DepartmentFormData) => {
-    // TODO: Replace with actual API call
-    const newDept: Department = { id: crypto.randomUUID(), ...data }
-    setDepartments((prev) => [...prev, newDept])
-    return newDept
-  }, [])
-
-  return { departments, isLoading, fetchDepartments, createDepartment, setDepartments }
+  return { departments, isLoading, error, fetchDepartments, createDepartment }
 }

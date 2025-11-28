@@ -5,12 +5,10 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { RoleSelector } from "./role-selector"
 import { GoogleIcon } from "@/components/icons"
-import type { UserRole } from "@/types"
 
 interface LoginFormProps {
-  onSubmit: (email: string, password: string, role: UserRole) => void
+  onSubmit: (email: string, password: string) => void
   onGoogleSignIn?: () => void
   isLoading?: boolean
 }
@@ -18,11 +16,10 @@ interface LoginFormProps {
 export function LoginForm({ onSubmit, onGoogleSignIn, isLoading }: LoginFormProps) {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [role, setRole] = useState<UserRole>("user")
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    onSubmit(email, password, role)
+    onSubmit(email, password)
   }
 
   return (
@@ -72,7 +69,6 @@ export function LoginForm({ onSubmit, onGoogleSignIn, isLoading }: LoginFormProp
           required
         />
       </div>
-      <RoleSelector value={role} onChange={setRole} />
       <Button
         type="submit"
         className="mt-3 h-11 text-sm font-medium gradient-primary hover:opacity-90 transition-opacity shadow-md"
