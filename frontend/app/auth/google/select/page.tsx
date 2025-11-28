@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { Suspense, useState, useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -12,8 +12,9 @@ import { organizationsApi } from "@/lib/api/organizations"
 import { apiClient } from "@/lib/api/client"
 import type { Organization } from "@/types"
 import { LogoIcon } from "@/components/icons"
+import { PageLoader } from "@/components/shared/loading-spinner"
 
-export default function GoogleAuthSelectPage() {
+function SelectContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { setToken, setUser } = useAuthStore()
@@ -231,6 +232,18 @@ export default function GoogleAuthSelectPage() {
         </CardContent>
       </Card>
     </main>
+  )
+}
+
+export default function GoogleAuthSelectPage() {
+  return (
+    <Suspense fallback={
+      <main className="min-h-screen flex items-center justify-center">
+        <PageLoader />
+      </main>
+    }>
+      <SelectContent />
+    </Suspense>
   )
 }
 

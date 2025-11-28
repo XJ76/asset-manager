@@ -1,11 +1,11 @@
 "use client"
 
-import { useEffect } from "react"
+import { Suspense, useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useAuthStore } from "@/stores/auth-store"
 import { PageLoader } from "@/components/shared/loading-spinner"
 
-export default function GoogleCallbackPage() {
+function CallbackContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { setToken, setUser } = useAuthStore()
@@ -35,5 +35,13 @@ export default function GoogleCallbackPage() {
   }, [searchParams, router, setToken, setUser])
 
   return <PageLoader />
+}
+
+export default function GoogleCallbackPage() {
+  return (
+    <Suspense fallback={<PageLoader />}>
+      <CallbackContent />
+    </Suspense>
+  )
 }
 
