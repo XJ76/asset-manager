@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { useAuthContext } from "@/contexts/auth-context"
 import { useRouter } from "next/navigation"
 import { LogOutIcon } from "@/components/icons"
+import { LogoutModal } from "@/components/auth/logout-modal"
 
 interface HeaderProps {
   title: string
@@ -41,15 +42,19 @@ export function Header({ title }: HeaderProps) {
             <p className="text-xs text-muted-foreground capitalize">{user?.role}</p>
           </div>
         </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleLogout}
-          className="text-muted-foreground hover:text-foreground"
-        >
-          <LogOutIcon className="h-4 w-4" />
-          <span className="sr-only">Logout</span>
-        </Button>
+        <LogoutModal
+          onLogout={handleLogout}
+          trigger={
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-muted-foreground hover:text-foreground"
+            >
+              <LogOutIcon className="h-4 w-4" />
+              <span className="sr-only">Logout</span>
+            </Button>
+          }
+        />
       </div>
     </header>
   )
