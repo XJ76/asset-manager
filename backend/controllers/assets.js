@@ -27,6 +27,15 @@ async function createAsset(req, res) {
   }
 }
 
+async function updateAsset(req, res) {
+  try {
+    const asset = await assetModel.update(req.params.id, req.body);
+    res.json(transformRow(asset));
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
 async function deleteAsset(req, res) {
   try {
     await assetModel.remove(req.params.id);
@@ -36,5 +45,5 @@ async function deleteAsset(req, res) {
   }
 }
 
-module.exports = { getAssets, createAsset, deleteAsset };
+module.exports = { getAssets, createAsset, updateAsset, deleteAsset };
 

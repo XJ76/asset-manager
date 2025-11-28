@@ -9,6 +9,7 @@ interface CategoriesState {
   error: string | null;
   fetchCategories: () => Promise<void>;
   createCategory: (category: CategoryFormData) => Promise<void>;
+  updateCategory: (id: string, category: CategoryFormData) => Promise<void>;
   deleteCategory: (id: string) => Promise<void>;
 }
 
@@ -31,6 +32,19 @@ export const useCategoriesStore = create<CategoriesState>((set) => ({
       const newCategory = await categoriesApi.create(category);
       set((state) => ({
         categories: [...state.categories, newCategory],
+        isLoading: false,
+      }));
+    } catch (error: any) {
+      set({ error: error.message, isLoading: false });
+      throw error;
+    }
+  },
+  updateCategory: async (id, category) => {
+    set({ isLoading: true, error: null });
+    try {
+      const updatedCategory = await categoriesApi.update(id, category);
+      set((state) => ({
+        categories: state.categories.map((c) => (c.id === id ? updatedCategory : c)),
         isLoading: false,
       }));
     } catch (error: any) {

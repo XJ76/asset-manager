@@ -9,6 +9,7 @@ interface DepartmentsState {
   error: string | null;
   fetchDepartments: () => Promise<void>;
   createDepartment: (department: DepartmentFormData) => Promise<void>;
+  updateDepartment: (id: string, department: DepartmentFormData) => Promise<void>;
   deleteDepartment: (id: string) => Promise<void>;
 }
 
@@ -31,6 +32,19 @@ export const useDepartmentsStore = create<DepartmentsState>((set) => ({
       const newDepartment = await departmentsApi.create(department);
       set((state) => ({
         departments: [...state.departments, newDepartment],
+        isLoading: false,
+      }));
+    } catch (error: any) {
+      set({ error: error.message, isLoading: false });
+      throw error;
+    }
+  },
+  updateDepartment: async (id, department) => {
+    set({ isLoading: true, error: null });
+    try {
+      const updatedDepartment = await departmentsApi.update(id, department);
+      set((state) => ({
+        departments: state.departments.map((d) => (d.id === id ? updatedDepartment : d)),
         isLoading: false,
       }));
     } catch (error: any) {

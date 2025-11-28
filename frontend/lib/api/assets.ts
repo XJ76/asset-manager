@@ -13,6 +13,11 @@ export const assetsApi = {
     return data;
   },
 
+  update: async (id: string, asset: AssetFormData): Promise<Asset> => {
+    const { data } = await apiClient.put<Asset>(`/assets/${id}`, asset);
+    return data;
+  },
+
   delete: async (id: string): Promise<void> => {
     await apiClient.delete(`/assets/${id}`);
   },

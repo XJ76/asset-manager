@@ -24,6 +24,15 @@ async function createDepartment(req, res) {
   }
 }
 
+async function updateDepartment(req, res) {
+  try {
+    const department = await departmentModel.update(req.params.id, req.body);
+    res.json(transformRow(department));
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
 async function deleteDepartment(req, res) {
   try {
     await departmentModel.remove(req.params.id);
@@ -33,5 +42,5 @@ async function deleteDepartment(req, res) {
   }
 }
 
-module.exports = { getDepartments, createDepartment, deleteDepartment };
+module.exports = { getDepartments, createDepartment, updateDepartment, deleteDepartment };
 

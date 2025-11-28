@@ -13,6 +13,11 @@ export const departmentsApi = {
     return data;
   },
 
+  update: async (id: string, department: DepartmentFormData): Promise<Department> => {
+    const { data } = await apiClient.put<Department>(`/departments/${id}`, department);
+    return data;
+  },
+
   delete: async (id: string): Promise<void> => {
     await apiClient.delete(`/departments/${id}`);
   },

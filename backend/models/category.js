@@ -26,6 +26,15 @@ async function create(categoryData) {
   return result.rows[0];
 }
 
+async function update(id, categoryData) {
+  const { name, description } = categoryData;
+  const result = await pool.query(
+    `UPDATE categories SET name = $1, description = $2 WHERE id = $3 RETURNING *`,
+    [name, description, id]
+  );
+  return result.rows[0];
+}
+
 async function remove(id) {
   await pool.query('DELETE FROM categories WHERE id = $1', [id]);
 }
@@ -34,6 +43,7 @@ module.exports = {
   findAll,
   findById,
   create,
+  update,
   remove,
 };
 

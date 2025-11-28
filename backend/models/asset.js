@@ -34,6 +34,16 @@ async function create(assetData) {
   return result.rows[0];
 }
 
+async function update(id, assetData) {
+  const { name, categoryId, departmentId, datePurchased, cost } = assetData;
+  const result = await pool.query(
+    `UPDATE assets SET name = $1, category_id = $2, department_id = $3, 
+     date_purchased = $4, cost = $5 WHERE id = $6 RETURNING *`,
+    [name, categoryId, departmentId, datePurchased, cost, id]
+  );
+  return result.rows[0];
+}
+
 async function remove(id) {
   await pool.query('DELETE FROM assets WHERE id = $1', [id]);
 }
@@ -42,6 +52,7 @@ module.exports = {
   findAll,
   findById,
   create,
+  update,
   remove,
 };
 

@@ -9,6 +9,7 @@ interface AssetsState {
   error: string | null;
   fetchAssets: () => Promise<void>;
   createAsset: (asset: AssetFormData) => Promise<void>;
+  updateAsset: (id: string, asset: AssetFormData) => Promise<void>;
   deleteAsset: (id: string) => Promise<void>;
 }
 
@@ -31,6 +32,19 @@ export const useAssetsStore = create<AssetsState>((set, get) => ({
       const newAsset = await assetsApi.create(asset);
       set((state) => ({
         assets: [...state.assets, newAsset],
+        isLoading: false,
+      }));
+    } catch (error: any) {
+      set({ error: error.message, isLoading: false });
+      throw error;
+    }
+  },
+  updateAsset: async (id, asset) => {
+    set({ isLoading: true, error: null });
+    try {
+      const updatedAsset = await assetsApi.update(id, asset);
+      set((state) => ({
+        assets: state.assets.map((a) => (a.id === id ? updatedAsset : a)),
         isLoading: false,
       }));
     } catch (error: any) {
