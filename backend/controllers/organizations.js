@@ -3,10 +3,11 @@ const userModel = require('../models/user');
 const { generateToken } = require('./auth');
 const { generateSlug } = require('../utils/slug');
 const { transformRow } = require('../utils/transform');
+const { hashPassword } = require('../utils/password');
 
 async function createOrganization(req, res) {
   try {
-    const { name, email, userName, userRole = 'admin' } = req.body;
+    const { name, email, userName, userRole = 'admin', password } = req.body;
     const slug = generateSlug(name);
     
     const org = await orgModel.create({
@@ -15,12 +16,15 @@ async function createOrganization(req, res) {
       createdBy: null,
     });
     
+    const hashedPassword = password ? await hashPassword(password) : null;
+    
     const user = await userModel.create({
       email,
       name: userName || email.split('@')[0],
       role: userRole,
       organizationId: org.id,
       status: 'approved',
+      password: hashedPassword,
     });
     
     const token = generateToken({

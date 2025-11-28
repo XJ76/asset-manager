@@ -17,11 +17,11 @@ async function findById(id) {
 }
 
 async function create(userData) {
-  const { email, name, role, organizationId, status = 'pending' } = userData;
+  const { email, name, role, organizationId, status = 'pending', password } = userData;
   const result = await pool.query(
-    `INSERT INTO users (email, name, role, organization_id, status)
-     VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-    [email, name, role, organizationId, status]
+    `INSERT INTO users (email, name, role, organization_id, status, password_hash)
+     VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+    [email, name, role, organizationId, status, password]
   );
   return result.rows[0];
 }

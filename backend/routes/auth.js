@@ -1,8 +1,10 @@
 const express = require('express');
 const passport = require('passport');
-const { googleCallback } = require('../controllers/auth');
+const { login, googleCallback } = require('../controllers/auth');
 
 const router = express.Router();
+
+router.post('/login', login);
 
 router.get('/google',
   passport.authenticate('google', { scope: ['profile', 'email'] })
