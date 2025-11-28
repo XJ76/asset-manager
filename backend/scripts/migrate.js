@@ -1,7 +1,7 @@
 require('dotenv').config();
 const { readFileSync } = require('fs');
 const { join } = require('path');
-const pool = require('../config/database');
+const { pool } = require('../config/database');
 
 async function migrate() {
   try {

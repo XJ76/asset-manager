@@ -1,4 +1,4 @@
-const pool = require('../config/database');
+const { pool } = require('../config/database');
 
 async function findAll(organizationId, userId = null) {
   let query = 'SELECT * FROM assets WHERE organization_id = $1';

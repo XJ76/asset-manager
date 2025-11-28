@@ -15,5 +15,28 @@ const pool = new Pool(
       }
 );
 
-module.exports = pool;
+pool.on('connect', () => {
+  console.log('✅ Database connection established');
+});
+
+pool.on('error', (err) => {
+  console.error('❌ Database connection error:', err);
+});
+
+async function testConnection() {
+  try {
+    const result = await pool.query('SELECT NOW()');
+    const dbName = process.env.DATABASE_URL 
+      ? new URL(process.env.DATABASE_URL).pathname.slice(1)
+      : process.env.DB_NAME || 'asset_manager';
+    console.log(`✅ Database connected: ${dbName}`);
+    console.log(`   Server time: ${result.rows[0].now}`);
+    return true;
+  } catch (error) {
+    console.error('❌ Database connection test failed:', error.message);
+    return false;
+  }
+}
+
+module.exports = { pool, testConnection };
 

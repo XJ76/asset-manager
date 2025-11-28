@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const passport = require('./config/passport');
+const { testConnection } = require('./config/database');
 
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
@@ -25,8 +26,12 @@ app.use(cors({
 app.use(express.json());
 app.use(passport.initialize());
 
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok' });
+app.get('/health', async (req, res) => {
+  const dbConnected = await testConnection();
+  res.json({ 
+    status: 'ok',
+    database: dbConnected ? 'connected' : 'disconnected'
+  });
 });
 
 app.use('/api/auth', authRoutes);
@@ -38,7 +43,20 @@ app.use('/api/organizations', orgRoutes);
 
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`Backend server running on port ${PORT}`);
-});
+async function startServer() {
+  console.log('🔄 Testing database connection...');
+  const dbConnected = await testConnection();
+  
+  if (!dbConnected) {
+    console.error('⚠️  Warning: Database connection failed. Server will start but API may not work.');
+  }
+  
+  app.listen(PORT, () => {
+    console.log(`🚀 Backend server running on port ${PORT}`);
+    console.log(`   Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`   Health check: http://localhost:${PORT}/health`);
+  });
+}
+
+startServer();
 
