@@ -13,10 +13,14 @@ export function OrgSelector({ selectedId, onSelect }: OrgSelectorProps) {
   const { organizations, isLoading, fetchOrganizations } = useOrganizations()
   const [search, setSearch] = useState("")
   const [hasFetched, setHasFetched] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!hasFetched) {
-      fetchOrganizations()
+      setError(null)
+      fetchOrganizations().catch((err: any) => {
+        setError(err.message || "Failed to load organizations")
+      })
       setHasFetched(true)
     }
   }, [hasFetched, fetchOrganizations])
@@ -41,7 +45,15 @@ export function OrgSelector({ selectedId, onSelect }: OrgSelectorProps) {
         />
       </div>
       <div className="max-h-48 overflow-y-auto space-y-2 min-h-[100px]">
-        {isLoading ? (
+        {error ? (
+          <div className="text-center py-4 px-2">
+            <p className="text-sm text-destructive mb-2">Failed to load organizations</p>
+            <p className="text-xs text-muted-foreground">{error}</p>
+            <p className="text-xs text-muted-foreground mt-2">
+              You can still create a new organization to get started.
+            </p>
+          </div>
+        ) : isLoading ? (
           <div className="flex items-center justify-center py-8">
             <div className="flex flex-col items-center gap-2">
               <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
@@ -49,9 +61,16 @@ export function OrgSelector({ selectedId, onSelect }: OrgSelectorProps) {
             </div>
           </div>
         ) : filtered.length === 0 ? (
-          <p className="text-center text-sm text-muted-foreground py-4">
-            {search ? "No organizations match your search" : "No organizations available"}
-          </p>
+          <div className="text-center py-4">
+            <p className="text-sm text-muted-foreground">
+              {search ? "No organizations match your search" : "No organizations available"}
+            </p>
+            {!search && (
+              <p className="text-xs text-muted-foreground mt-2">
+                If you're the first user, create a new organization instead.
+              </p>
+            )}
+          </div>
         ) : (
           filtered.map((org) => (
             <OrgItem 

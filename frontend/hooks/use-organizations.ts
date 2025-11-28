@@ -17,8 +17,13 @@ export function useOrganizations() {
     try {
       const orgs = await organizationsApi.getAll()
       setOrganizations(orgs)
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to fetch organizations:", error)
+      // Don't clear organizations on error, keep previous state if any
+      // This prevents UI glitches
+      if (error.message) {
+        console.error("Error details:", error.message)
+      }
       setOrganizations([])
     } finally {
       setIsLoading(false)

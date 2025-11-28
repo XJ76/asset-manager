@@ -28,8 +28,20 @@ export const organizationsApi = {
   },
 
   getAll: async (): Promise<Organization[]> => {
-    const { data } = await apiClient.get<Organization[]>('/organizations');
-    return data;
+    try {
+      const { data } = await apiClient.get<Organization[]>('/organizations');
+      return data;
+    } catch (error: any) {
+      if (error.code === 'ERR_NETWORK' || error.message === 'Network Error' || error.message?.includes('Network Error')) {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api';
+        const isProduction = typeof window !== 'undefined' && !window.location.hostname.includes('localhost');
+        const message = isProduction
+          ? 'Backend service is starting up. Please wait a moment and try again. (Render free tier may take up to 50 seconds to wake up)'
+          : `Cannot connect to backend at ${apiUrl}. Make sure the backend server is running.`;
+        throw new Error(message);
+      }
+      throw error;
+    }
   },
 };
 
