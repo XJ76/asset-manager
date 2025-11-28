@@ -26,9 +26,14 @@ async function create(categoryData) {
   return result.rows[0];
 }
 
+async function remove(id) {
+  await pool.query('DELETE FROM categories WHERE id = $1', [id]);
+}
+
 module.exports = {
   findAll,
   findById,
   create,
+  remove,
 };
 

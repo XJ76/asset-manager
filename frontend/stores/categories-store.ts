@@ -9,6 +9,7 @@ interface CategoriesState {
   error: string | null;
   fetchCategories: () => Promise<void>;
   createCategory: (category: CategoryFormData) => Promise<void>;
+  deleteCategory: (id: string) => Promise<void>;
 }
 
 export const useCategoriesStore = create<CategoriesState>((set) => ({
@@ -30,6 +31,19 @@ export const useCategoriesStore = create<CategoriesState>((set) => ({
       const newCategory = await categoriesApi.create(category);
       set((state) => ({
         categories: [...state.categories, newCategory],
+        isLoading: false,
+      }));
+    } catch (error: any) {
+      set({ error: error.message, isLoading: false });
+      throw error;
+    }
+  },
+  deleteCategory: async (id) => {
+    set({ isLoading: true, error: null });
+    try {
+      await categoriesApi.delete(id);
+      set((state) => ({
+        categories: state.categories.filter((c) => c.id !== id),
         isLoading: false,
       }));
     } catch (error: any) {

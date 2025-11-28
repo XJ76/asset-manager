@@ -24,5 +24,14 @@ async function createCategory(req, res) {
   }
 }
 
-module.exports = { getCategories, createCategory };
+async function deleteCategory(req, res) {
+  try {
+    await categoryModel.remove(req.params.id);
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
+module.exports = { getCategories, createCategory, deleteCategory };
 

@@ -12,5 +12,9 @@ export const departmentsApi = {
     const { data } = await apiClient.post<Department>('/departments', department);
     return data;
   },
+
+  delete: async (id: string): Promise<void> => {
+    await apiClient.delete(`/departments/${id}`);
+  },
 };
 

@@ -17,7 +17,7 @@ export function OrgSelector({ selectedId, onSelect }: OrgSelectorProps) {
     fetchOrganizations()
   }, [fetchOrganizations])
 
-  const filtered = organizations.filter((org) => org.name.toLowerCase().includes(search.toLowerCase()))
+  const filtered = (organizations || []).filter((org) => org.name.toLowerCase().includes(search.toLowerCase()))
 
   return (
     <div className="space-y-3">

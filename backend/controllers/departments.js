@@ -24,5 +24,14 @@ async function createDepartment(req, res) {
   }
 }
 
-module.exports = { getDepartments, createDepartment };
+async function deleteDepartment(req, res) {
+  try {
+    await departmentModel.remove(req.params.id);
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
+module.exports = { getDepartments, createDepartment, deleteDepartment };
 

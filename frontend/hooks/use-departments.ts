@@ -4,11 +4,11 @@ import { useEffect } from "react"
 import { useDepartmentsStore } from "@/stores/departments-store"
 
 export function useDepartments() {
-  const { departments, isLoading, error, fetchDepartments, createDepartment } = useDepartmentsStore()
+  const { departments, isLoading, error, fetchDepartments, createDepartment, deleteDepartment } = useDepartmentsStore()
 
   useEffect(() => {
     fetchDepartments()
   }, [fetchDepartments])
 
-  return { departments, isLoading, error, fetchDepartments, createDepartment }
+  return { departments, isLoading, error, fetchDepartments, createDepartment, deleteDepartment }
 }

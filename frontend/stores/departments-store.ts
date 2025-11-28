@@ -9,6 +9,7 @@ interface DepartmentsState {
   error: string | null;
   fetchDepartments: () => Promise<void>;
   createDepartment: (department: DepartmentFormData) => Promise<void>;
+  deleteDepartment: (id: string) => Promise<void>;
 }
 
 export const useDepartmentsStore = create<DepartmentsState>((set) => ({
@@ -30,6 +31,19 @@ export const useDepartmentsStore = create<DepartmentsState>((set) => ({
       const newDepartment = await departmentsApi.create(department);
       set((state) => ({
         departments: [...state.departments, newDepartment],
+        isLoading: false,
+      }));
+    } catch (error: any) {
+      set({ error: error.message, isLoading: false });
+      throw error;
+    }
+  },
+  deleteDepartment: async (id) => {
+    set({ isLoading: true, error: null });
+    try {
+      await departmentsApi.delete(id);
+      set((state) => ({
+        departments: state.departments.filter((d) => d.id !== id),
         isLoading: false,
       }));
     } catch (error: any) {
