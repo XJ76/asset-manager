@@ -11,10 +11,13 @@ import type { CategoryFormData } from "@/types/forms"
 interface CategoryFormProps {
   onSubmit: (data: CategoryFormData) => void
   onCancel: () => void
+  initialData?: CategoryFormData
 }
 
-export function CategoryForm({ onSubmit, onCancel }: CategoryFormProps) {
-  const [formData, setFormData] = useState<CategoryFormData>({ name: "", description: "" })
+export function CategoryForm({ onSubmit, onCancel, initialData }: CategoryFormProps) {
+  const [formData, setFormData] = useState<CategoryFormData>(
+    initialData || { name: "", description: "" }
+  )
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -54,7 +57,7 @@ export function CategoryForm({ onSubmit, onCancel }: CategoryFormProps) {
           Cancel
         </Button>
         <Button type="submit" className="px-6 gradient-primary hover:opacity-90">
-          Create Category
+          {initialData ? "Update Category" : "Create Category"}
         </Button>
       </div>
     </form>

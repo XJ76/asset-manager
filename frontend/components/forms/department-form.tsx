@@ -11,10 +11,13 @@ import type { DepartmentFormData } from "@/types/forms"
 interface DepartmentFormProps {
   onSubmit: (data: DepartmentFormData) => void
   onCancel: () => void
+  initialData?: DepartmentFormData
 }
 
-export function DepartmentForm({ onSubmit, onCancel }: DepartmentFormProps) {
-  const [formData, setFormData] = useState<DepartmentFormData>({ name: "", description: "" })
+export function DepartmentForm({ onSubmit, onCancel, initialData }: DepartmentFormProps) {
+  const [formData, setFormData] = useState<DepartmentFormData>(
+    initialData || { name: "", description: "" }
+  )
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -54,7 +57,7 @@ export function DepartmentForm({ onSubmit, onCancel }: DepartmentFormProps) {
           Cancel
         </Button>
         <Button type="submit" className="px-6 gradient-primary hover:opacity-90">
-          Create Department
+          {initialData ? "Update Department" : "Create Department"}
         </Button>
       </div>
     </form>

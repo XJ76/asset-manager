@@ -14,16 +14,19 @@ interface AssetFormProps {
   onCancel: () => void
   categories: Category[]
   departments: Department[]
+  initialData?: AssetFormData
 }
 
-export function AssetForm({ onSubmit, onCancel, categories, departments }: AssetFormProps) {
-  const [formData, setFormData] = useState<AssetFormData>({
-    name: "",
-    categoryId: "",
-    departmentId: "",
-    datePurchased: "",
-    cost: 0,
-  })
+export function AssetForm({ onSubmit, onCancel, categories, departments, initialData }: AssetFormProps) {
+  const [formData, setFormData] = useState<AssetFormData>(
+    initialData || {
+      name: "",
+      categoryId: "",
+      departmentId: "",
+      datePurchased: "",
+      cost: 0,
+    }
+  )
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -75,7 +78,7 @@ export function AssetForm({ onSubmit, onCancel, categories, departments }: Asset
           Cancel
         </Button>
         <Button type="submit" className="px-6 gradient-primary hover:opacity-90">
-          Create Asset
+          {initialData ? "Update Asset" : "Create Asset"}
         </Button>
       </div>
     </form>

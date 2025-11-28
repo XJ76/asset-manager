@@ -7,13 +7,15 @@ import { PageHeader } from "@/components/shared/page-header"
 import { Modal } from "@/components/shared/modal"
 import { ConfirmDialog } from "@/components/shared/confirm-dialog"
 import { DepartmentForm } from "@/components/forms/department-form"
-import { BuildingIcon, TrashIcon } from "@/components/icons"
+import { BuildingIcon, TrashIcon, PencilIcon } from "@/components/icons"
 import { useDepartments } from "@/hooks/use-departments"
 import type { Department } from "@/types"
+import type { DepartmentFormData } from "@/types/forms"
 
 export function DepartmentsSection() {
-  const { departments, createDepartment, deleteDepartment } = useDepartments()
+  const { departments, createDepartment, updateDepartment, deleteDepartment } = useDepartments()
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [editingDepartment, setEditingDepartment] = useState<Department | null>(null)
   const [deleteId, setDeleteId] = useState<string | null>(null)
 
   const columns = [
@@ -31,21 +33,38 @@ export function DepartmentsSection() {
       key: "actions",
       label: "",
       render: (item: Department) => (
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setDeleteId(item.id)}
-          className="hover:bg-destructive/10 hover:text-destructive"
-        >
-          <TrashIcon className="h-4 w-4" />
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setEditingDepartment(item)}
+            className="hover:bg-primary/10 hover:text-primary"
+          >
+            <PencilIcon className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setDeleteId(item.id)}
+            className="hover:bg-destructive/10 hover:text-destructive"
+          >
+            <TrashIcon className="h-4 w-4" />
+          </Button>
+        </div>
       ),
     },
   ]
 
-  const handleCreate = async (data: Parameters<typeof createDepartment>[0]) => {
+  const handleCreate = async (data: DepartmentFormData) => {
     await createDepartment(data)
     setIsModalOpen(false)
+  }
+
+  const handleUpdate = async (data: DepartmentFormData) => {
+    if (editingDepartment) {
+      await updateDepartment(editingDepartment.id, data)
+      setEditingDepartment(null)
+    }
   }
 
   const handleDelete = async () => {
@@ -71,6 +90,18 @@ export function DepartmentsSection() {
         description="Add a new department"
       >
         <DepartmentForm onSubmit={handleCreate} onCancel={() => setIsModalOpen(false)} />
+      </Modal>
+      <Modal
+        open={!!editingDepartment}
+        onClose={() => setEditingDepartment(null)}
+        title="Edit Department"
+        description="Update department information"
+      >
+        <DepartmentForm
+          onSubmit={handleUpdate}
+          onCancel={() => setEditingDepartment(null)}
+          initialData={editingDepartment ? { name: editingDepartment.name, description: editingDepartment.description || "" } : undefined}
+        />
       </Modal>
       <ConfirmDialog
         open={!!deleteId}
