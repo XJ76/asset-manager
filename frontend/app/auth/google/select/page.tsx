@@ -14,7 +14,7 @@ import type { Organization } from "@/types"
 import { LogoIcon } from "@/components/icons"
 import { PageLoader } from "@/components/shared/loading-spinner"
 
-function SelectContent() {
+function GoogleAuthSelectForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { setToken, setUser } = useAuthStore()
@@ -242,7 +242,7 @@ export default function GoogleAuthSelectPage() {
         <PageLoader />
       </main>
     }>
-      <SelectContent />
+      <GoogleAuthSelectForm />
     </Suspense>
   )
 }
