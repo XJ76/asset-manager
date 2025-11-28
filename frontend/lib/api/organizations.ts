@@ -26,5 +26,10 @@ export const organizationsApi = {
     });
     return response;
   },
+
+  getAll: async (): Promise<Organization[]> => {
+    const { data } = await apiClient.get<Organization[]>('/organizations');
+    return data;
+  },
 };
 

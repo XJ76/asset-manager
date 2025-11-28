@@ -2,7 +2,7 @@ const orgModel = require('../models/organization');
 const userModel = require('../models/user');
 const { generateToken } = require('./auth');
 const { generateSlug } = require('../utils/slug');
-const { transformRow } = require('../utils/transform');
+const { transformRow, transformRows } = require('../utils/transform');
 const { hashPassword } = require('../utils/password');
 
 async function createOrganization(req, res) {
@@ -44,5 +44,17 @@ async function createOrganization(req, res) {
   }
 }
 
-module.exports = { createOrganization };
+async function getAllOrganizations(req, res) {
+  try {
+    const { pool } = require('../config/database');
+    const result = await pool.query(
+      'SELECT * FROM organizations ORDER BY name'
+    );
+    res.json(transformRows(result.rows));
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
+module.exports = { createOrganization, getAllOrganizations };
 

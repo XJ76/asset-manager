@@ -27,8 +27,8 @@ export default function LoginPage() {
   }
 
   const handleGoogleSignIn = async () => {
-    // TODO: Integrate with your Google OAuth provider
-    console.log("Google sign-in clicked - integrate your OAuth here")
+    const { authApi } = await import("@/lib/api/auth")
+    authApi.googleAuth()
   }
 
   return (

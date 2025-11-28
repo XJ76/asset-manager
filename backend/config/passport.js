@@ -15,7 +15,13 @@ passport.use(new GoogleStrategy({
     let user = await userModel.findByEmail(email);
     
     if (!user) {
-      return done(null, false, { message: 'User not found' });
+      return done(null, {
+        id: null,
+        email: email,
+        name: displayName || email.split('@')[0],
+        role: null,
+        organizationId: null,
+      });
     }
     
     return done(null, {
