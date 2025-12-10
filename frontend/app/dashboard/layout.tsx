@@ -6,11 +6,12 @@ import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 import { DashboardLayout } from "@/components/layout/dashboard-layout"
 import { useAuthContext } from "@/contexts/auth-context"
-import { LayoutDashboardIcon, PackageIcon } from "@/components/icons"
+import { LayoutDashboardIcon, PackageIcon, ShieldCheckIcon } from "@/components/icons"
 
 const userMenuItems = [
   { label: "Dashboard", href: "/dashboard", icon: <LayoutDashboardIcon className="h-4 w-4" /> },
   { label: "My Assets", href: "/dashboard/assets", icon: <PackageIcon className="h-4 w-4" /> },
+  { label: "Warranty Centre", href: "/warranty-centre", icon: <ShieldCheckIcon className="h-4 w-4" /> },
 ]
 
 export default function UserDashboardLayout({ children }: { children: React.ReactNode }) {

@@ -5,8 +5,10 @@ import { DataTable } from "@/components/shared/data-table"
 import { PageHeader } from "@/components/shared/page-header"
 import { Modal } from "@/components/shared/modal"
 import { AssetForm } from "@/components/forms/asset-form"
+import { AssetDetailModal } from "@/components/shared/asset-detail-modal"
 import { Badge } from "@/components/ui/badge"
-import { PackageIcon } from "@/components/icons"
+import { Button } from "@/components/ui/button"
+import { PackageIcon, EyeIcon } from "@/components/icons"
 import { useAssets } from "@/hooks/use-assets"
 import { useCategories } from "@/hooks/use-categories"
 import { useDepartments } from "@/hooks/use-departments"
@@ -15,10 +17,12 @@ import type { Asset } from "@/types"
 
 export function MyAssetsSection() {
   const { user } = useAuthContext()
-  const { assets, createAsset } = useAssets(user?.id)
+  const { assets, createAsset, fetchAssets } = useAssets(user?.id)
   const { categories } = useCategories()
   const { departments } = useDepartments()
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null)
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
 
   const myAssets = assets.filter((a) => a.createdBy === user?.id)
   const getCategoryName = (id: string) => categories.find((c) => c.id === id)?.name || "Unknown"
@@ -45,11 +49,33 @@ export function MyAssetsSection() {
       label: "Purchased",
       render: (item: Asset) => new Date(item.datePurchased).toLocaleDateString(),
     },
+    {
+      key: "actions",
+      label: "",
+      render: (item: Asset) => (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => {
+            setSelectedAsset(item)
+            setIsDetailModalOpen(true)
+          }}
+          className="hover:bg-primary/10 hover:text-primary"
+        >
+          <EyeIcon className="h-4 w-4 mr-1" />
+          View
+        </Button>
+      ),
+    },
   ]
 
   const handleCreate = async (data: Parameters<typeof createAsset>[0]) => {
     await createAsset(data)
     setIsModalOpen(false)
+  }
+
+  const handleWarrantyRegistered = async () => {
+    await fetchAssets()
   }
 
   return (
@@ -74,6 +100,15 @@ export function MyAssetsSection() {
           departments={departments}
         />
       </Modal>
+      <AssetDetailModal
+        asset={selectedAsset}
+        open={isDetailModalOpen}
+        onClose={() => {
+          setIsDetailModalOpen(false)
+          setSelectedAsset(null)
+        }}
+        onWarrantyRegistered={handleWarrantyRegistered}
+      />
     </div>
   )
 }

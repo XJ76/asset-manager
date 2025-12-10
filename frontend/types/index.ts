@@ -41,4 +41,19 @@ export interface Asset {
   cost: number
   createdBy: string
   createdAt: Date
+  warrantyRegistered?: boolean
+}
+
+export interface WarrantyRegistration {
+  id: number
+  assetId: string
+  assetName: string
+  categoryId?: string
+  departmentId?: string
+  datePurchased?: string
+  cost?: number
+  registeredBy: string
+  registeredByName: string
+  organizationId?: string
+  registeredAt: string
 }
