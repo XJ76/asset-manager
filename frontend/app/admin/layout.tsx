@@ -6,7 +6,7 @@ import { useEffect } from "react"
 import { DashboardLayout } from "@/components/layout/dashboard-layout"
 import { PageLoader } from "@/components/shared/loading-spinner"
 import { useAuthContext } from "@/contexts/auth-context"
-import { LayoutDashboardIcon, UsersIcon, FolderIcon, BuildingIcon, PackageIcon, ShieldCheckIcon } from "@/components/icons"
+import { LayoutDashboardIcon, UsersIcon, FolderIcon, BuildingIcon, PackageIcon } from "@/components/icons"
 
 const adminMenuItems = [
   { label: "Dashboard", href: "/admin", icon: <LayoutDashboardIcon className="h-4 w-4" /> },
@@ -14,7 +14,6 @@ const adminMenuItems = [
   { label: "Categories", href: "/admin/categories", icon: <FolderIcon className="h-4 w-4" /> },
   { label: "Departments", href: "/admin/departments", icon: <BuildingIcon className="h-4 w-4" /> },
   { label: "All Assets", href: "/admin/assets", icon: <PackageIcon className="h-4 w-4" /> },
-  { label: "Warranty Centre", href: "/warranty-centre", icon: <ShieldCheckIcon className="h-4 w-4" /> },
 ]
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
